@@ -31,7 +31,7 @@ def main():
             file_path="documents/example.txt"
         )
         file: FileResponse = adapter.get_file(get_request)
-        print(f"File content: {file}")
+        print(f"File content: {file.content}")
 
         # 4. Update a file
         with open('updated_example.txt', 'rb') as file:
