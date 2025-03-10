@@ -1,8 +1,8 @@
 from typing import Dict, Any, Optional
 import requests
 from io import BytesIO
-from adapter.exceptions import FileManagerAdapterException
-from models.response import FileResponse
+from ..adapter.exceptions import FileManagerAdapterException
+from ..models.response import FileResponse
 
 class HttpClient:
     """HTTP client for making requests to the file manager service."""

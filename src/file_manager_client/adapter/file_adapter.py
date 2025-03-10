@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Dict, Any, Optional
 from pathlib import Path
-from utils.http_client import HttpClient
-from adapter.exceptions import FileManagerAdapterException
-from models.response import FileResponse
+from .exceptions import FileManagerAdapterException
+from ..utils.http_client import HttpClient
+from ..models.response import FileResponse
 
 @dataclass
 class FileRequest:

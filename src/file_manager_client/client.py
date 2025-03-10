@@ -45,6 +45,23 @@ class FileManagerClient:
         """
         request = GETFile(bucket_id=bucket_id, file_path=file_path)
         return self.adapter.get_file(request)
+    
+    def update_file(self, bucket_id: str, directory: str, file: Union[str, BinaryIO]) -> FileEntity:
+        """
+        Update a file in the service.
+        
+        Args:
+            bucket_id: Bucket ID
+            directory: Target directory
+            file: File to update (can be path or file object)
+        """
+        if isinstance(file, str):
+            with open(file, 'rb') as f:
+                request = PUTFile(bucket_id=bucket_id, directory=directory, file=f)
+                return self.adapter.update_file(request)
+        else:
+            request = PUTFile(bucket_id=bucket_id, directory=directory, file=file)
+            return self.adapter.update_file(request)
 
     def delete_file(self, bucket_id: str, file_path: str) -> bool:
         """
