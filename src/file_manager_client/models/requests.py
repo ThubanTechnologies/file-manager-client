@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Union, BinaryIO, TextIO
+from typing import Union, BinaryIO, TextIO, List
 
 FileType = Union[BinaryIO, TextIO, str]
 
@@ -18,6 +18,12 @@ class POSTFile(FileRequest):
 class GETFile(FileRequest):
     """Request model for file retrieval operation."""
     file_path: str
+
+@dataclass
+class GETStructure(FileRequest):
+    """Request model for structure retrieval operation."""
+    bucket_id: str
+    extensions: List[str]
 
 @dataclass
 class PUTFile(FileRequest):

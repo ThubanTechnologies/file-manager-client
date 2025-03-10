@@ -1,7 +1,7 @@
-from typing import BinaryIO, Union
+from typing import BinaryIO, Union, List, Dict, Any
 from .adapter.file_adapter import FileAdapter
 from .utils.http_client import HttpClient
-from .models.requests import POSTFile, GETFile, PUTFile, DELETEFile
+from .models.requests import POSTFile, GETFile, PUTFile, DELETEFile, GETStructure
 from .models.responses import FileEntity
 
 class FileManagerClient:
@@ -45,6 +45,20 @@ class FileManagerClient:
         """
         request = GETFile(bucket_id=bucket_id, file_path=file_path)
         return self.adapter.get_file(request)
+    
+    def list_files(self, bucket_id: str, extensions: List[str] = None) -> Dict[str, Any]:
+        """
+        Get the file structure from the service.
+        
+        Args:
+            bucket_id: Bucket ID
+            extensions: Optional list of file extensions to filter by
+        
+        Returns:
+            Dictionary with the file structure
+        """
+        request = GETStructure(bucket_id=bucket_id, extensions=extensions or [])
+        return self.adapter.get_files(request)
     
     def update_file(self, bucket_id: str, directory: str, file: Union[str, BinaryIO]) -> FileEntity:
         """

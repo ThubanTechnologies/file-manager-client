@@ -47,8 +47,16 @@ def main():
         
         print(f"File updated: {result}")
 
-        # 4. Delete a file
-        print("\n4. Deleting file...")
+        # 4. List files
+        print("\n4. Listing files...")
+        structure = client.list_files(
+            bucket_id="my-bucket",
+            extensions=["txt"]
+        )
+        print(f"Files: {structure}")
+
+        # 5. Delete a file
+        print("\n5. Deleting file...")
         if client.delete_file(
             bucket_id="my-bucket",
             file_path="documents/example.txt"

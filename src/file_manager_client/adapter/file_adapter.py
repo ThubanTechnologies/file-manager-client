@@ -1,9 +1,11 @@
 from dataclasses import dataclass
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List, Union
 from pathlib import Path
 from .exceptions import FileManagerAdapterException
 from ..utils.http_client import HttpClient
 from ..models.response import FileResponse
+from ..models.requests import POSTFile, GETFile, PUTFile, DELETEFile, GETStructure
+from ..models.responses import FileEntity
 
 @dataclass
 class FileRequest:
@@ -34,7 +36,7 @@ class FileAdapter:
             self._prepare_file_data(request)
         )
 
-    def get_file(self, request: FileRequest) -> FileResponse:
+    def get_file(self, request: GETFile) -> FileEntity:
         """Gets a file from the microservice.
         
         Returns:
@@ -48,7 +50,17 @@ class FileAdapter:
         )
         return self._get(url)
 
-    def update_file(self, request: FileRequest) -> Dict[str, Any]:
+    def get_files(self, request: GETStructure) -> Dict[str, Any]:
+        """Get file structure from the service."""
+        structure_endpoint: str = f"{self._base_url}/structure"
+        params = {
+            "bucket_id": request.bucket_id,
+            "extensions": request.extensions
+        }
+        url: str = self._build_url_with_params(structure_endpoint, **params)
+        return self._get(url)
+
+    def update_file(self, request: PUTFile) -> FileEntity:
         """Updates a file in the microservice."""
         self._validate_save_request(request)
         return self._put(
@@ -59,7 +71,7 @@ class FileAdapter:
     def delete_file(self, request: FileRequest) -> Dict[str, Any]:
         """Deletes a file from the microservice."""
         self._validate_get_request(request)
-        url = self._build_url_with_params(
+        url: str = self._build_url_with_params(
             self._file_endpoint,
             bucket_id=request.bucket_id,
             file_path=request.file_path
@@ -75,10 +87,36 @@ class FileAdapter:
             data["file"] = request.file
         return data
 
-    def _build_url_with_params(self, base_url: str, **params: str) -> str:
-        """Builds URL with query parameters."""
-        query_params = "&".join(f"{k}={v}" for k, v in params.items() if v)
-        return f"{base_url}?{query_params}"
+    def _build_url_with_params(self, base_url: str, **params: Any) -> str:
+        """
+        Builds URL with query parameters, handling both simple values and lists.
+        
+        Args:
+            base_url: The base URL to append parameters to
+            **params: Keyword arguments where values can be simple types or lists
+            
+        Returns:
+            Complete URL with properly formatted query parameters
+        """
+        query_parts = []
+        
+        for key, value in params.items():
+            if value is None:
+                continue
+            
+            is_iterable: bool = hasattr(value, '__iter__') and not isinstance(value, str)
+                
+            if is_iterable:
+                for item in value:
+                    if item:
+                        query_parts.append(f"{key}={item}")
+            elif value:
+                query_parts.append(f"{key}={value}")
+                
+        if not query_parts:
+            return base_url
+            
+        return f"{base_url}?{'&'.join(query_parts)}"
 
     def _validate_save_request(self, request: FileRequest) -> None:
         """Validates save/update request parameters."""
