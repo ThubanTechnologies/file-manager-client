@@ -1,0 +1,6 @@
+_DEFAULT_URL = "http://localhost:5003"
+_API_URI = "/api"
+_API_VERSION = "/v1"
+BASE_URL = f"{_DEFAULT_URL}{_API_URI}{_API_VERSION}"
+FILE_ENDPOINT = f"{BASE_URL}/file"
+STRUCTURE_ENDPOINT = f"{BASE_URL}/structure"

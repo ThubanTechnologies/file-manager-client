@@ -6,10 +6,11 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.models.responses import FileEntity
 from src.client import FileManagerClient
 from src.adapter.exceptions import FileManagerAdapterException
+from src.config import config
 
 def main():
 
-    client = FileManagerClient(base_url="http://localhost:5003/api/v1")
+    client = FileManagerClient(base_url=config.BASE_URL)
 
     try:
         # Upload a file using path

@@ -8,11 +8,13 @@ from src.adapter.file_adapter import FileAdapter
 from src.utils.http_client import HttpClient
 from src.models.requests import POSTFile, GETFile, PUTFile, DELETEFile
 from src.adapter.exceptions import FileManagerAdapterException
+from src.config import config
 
 def main():
     # 1. Initialize HTTP client and adapter
     http_client = HttpClient(timeout=30)
-    adapter = FileAdapter(base_url="http://localhost:5003/api/v1", http_client=http_client)
+    base_url = config.BASE_URL
+    adapter = FileAdapter(base_url, http_client=http_client)
 
     try:
         # 2. Upload a file
