@@ -30,12 +30,9 @@ class HttpClient:
 
         content_type: str = response.headers.get("Content-Type", "")
 
-        logger.info(f"Esto son los headers: {response.headers}")
-
         try:
 
             if "application/json" in content_type:
-                logger.info("application/json")
                 return FileResponse(content=response.json(), is_file=False)
 
             return FileResponse(
