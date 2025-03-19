@@ -30,7 +30,7 @@ class HttpClient:
 
         content_type: str = response.headers.get("Content-Type", "")
 
-        logger.info(f"Esto es lo que tiene el response: {response}")
+        logger.info(f"Esto son los headers: {response.headers}")
 
         try:
 
