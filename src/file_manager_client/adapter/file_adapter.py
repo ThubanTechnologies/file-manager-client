@@ -6,6 +6,7 @@ from ..utils.http_client import HttpClient
 from ..models.response import FileResponse
 from ..models.requests import POSTFile, GETFile, PUTFile, DELETEFile, GETStructure
 from ..models.responses import FileEntity
+from ..utils.normalize_path import normalize_path
 
 @dataclass
 class FileRequest:
@@ -82,7 +83,7 @@ class FileAdapter:
         """Prepares file data for request."""
         data = {"bucket_id": request.bucket_id}
         if request.directory:
-            data["directory"] = request.directory
+            data["directory"] = normalize_path(request.directory)
         if request.file:
             data["file"] = request.file
         return data
