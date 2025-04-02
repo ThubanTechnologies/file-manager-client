@@ -61,7 +61,7 @@ class FileManagerClient:
         Args:
             bucket_id: Bucket ID
             extensions: Optional list of file extensions to filter by
-            folders: Optional list of folders to filter by
+            folders: Optional list of folders to filter
 
         Returns:
             Dictionary with the file structure
