@@ -8,13 +8,16 @@ from ..models.requests import POSTFile, GETFile, PUTFile, DELETEFile, GETStructu
 from ..models.responses import FileEntity
 from ..utils.normalize_path import normalize_path
 
+
 @dataclass
 class FileRequest:
     """Data class for file request parameters."""
+
     bucket_id: str
     directory: Optional[str] = None
     file_path: Optional[str] = None
     file: Optional[Any] = None
+
 
 class FileAdapter:
     """Adapter to interact with the file management microservice paths."""
@@ -24,22 +27,19 @@ class FileAdapter:
             raise ValueError("base_url cannot be empty")
         if not isinstance(http_client, HttpClient):
             raise ValueError("http_client must be an instance of HttpClient")
-            
-        self._base_url: str = base_url.rstrip('/')
+
+        self._base_url: str = base_url.rstrip("/")
         self._http_client: HttpClient = http_client
         self._file_endpoint: str = f"{self._base_url}/file"
 
     def save_file(self, request: FileRequest) -> Dict[str, Any]:
         """Saves a file to the microservice."""
         self._validate_save_request(request)
-        return self._post(
-            self._file_endpoint,
-            self._prepare_file_data(request)
-        )
+        return self._post(self._file_endpoint, self._prepare_file_data(request))
 
     def get_file(self, request: GETFile) -> FileEntity:
         """Gets a file from the microservice.
-        
+
         Returns:
             FileResponse containing either file data or JSON response
         """
@@ -47,7 +47,7 @@ class FileAdapter:
         url = self._build_url_with_params(
             self._file_endpoint,
             bucket_id=request.bucket_id,
-            file_path=request.file_path
+            file_path=request.file_path,
         )
         return self._get(url)
 
@@ -56,7 +56,8 @@ class FileAdapter:
         structure_endpoint: str = f"{self._base_url}/structure"
         params = {
             "bucket_id": request.bucket_id,
-            "extensions": request.extensions
+            "extensions": request.extensions,
+            "folders": request.folders,
         }
         url: str = self._build_url_with_params(structure_endpoint, **params)
         return self._get(url)
@@ -64,10 +65,7 @@ class FileAdapter:
     def update_file(self, request: PUTFile) -> FileEntity:
         """Updates a file in the microservice."""
         self._validate_save_request(request)
-        return self._put(
-            self._file_endpoint,
-            self._prepare_file_data(request)
-        )
+        return self._put(self._file_endpoint, self._prepare_file_data(request))
 
     def delete_file(self, request: FileRequest) -> Dict[str, Any]:
         """Deletes a file from the microservice."""
@@ -75,7 +73,7 @@ class FileAdapter:
         url: str = self._build_url_with_params(
             self._file_endpoint,
             bucket_id=request.bucket_id,
-            file_path=request.file_path
+            file_path=request.file_path,
         )
         return self._delete(url)
 
@@ -91,32 +89,34 @@ class FileAdapter:
     def _build_url_with_params(self, base_url: str, **params: Any) -> str:
         """
         Builds URL with query parameters, handling both simple values and lists.
-        
+
         Args:
             base_url: The base URL to append parameters to
             **params: Keyword arguments where values can be simple types or lists
-            
+
         Returns:
             Complete URL with properly formatted query parameters
         """
         query_parts = []
-        
+
         for key, value in params.items():
             if value is None:
                 continue
-            
-            is_iterable: bool = hasattr(value, '__iter__') and not isinstance(value, str)
-                
+
+            is_iterable: bool = hasattr(value, "__iter__") and not isinstance(
+                value, str
+            )
+
             if is_iterable:
                 for item in value:
                     if item:
                         query_parts.append(f"{key}={item}")
             elif value:
                 query_parts.append(f"{key}={value}")
-                
+
         if not query_parts:
             return base_url
-            
+
         return f"{base_url}?{'&'.join(query_parts)}"
 
     def _validate_save_request(self, request: FileRequest) -> None:
@@ -135,7 +135,7 @@ class FileAdapter:
 
     def _post(self, url: str, data: Dict[str, Any]) -> Dict[str, Any]:
         """Performs a POST request using HTTP client."""
-        files = {'file': data.pop('file')} if 'file' in data else None
+        files = {"file": data.pop("file")} if "file" in data else None
         return self._http_client.post_file(url, data=data, files=files)
 
     def _get(self, url: str) -> FileResponse:
@@ -144,7 +144,7 @@ class FileAdapter:
 
     def _put(self, url: str, data: Dict[str, Any]) -> Dict[str, Any]:
         """Performs a PUT request using HTTP client."""
-        files = {'file': data.pop('file')} if 'file' in data else None
+        files = {"file": data.pop("file")} if "file" in data else None
         return self._http_client.update_file(url, data=data, files=files)
 
     def _delete(self, url: str) -> Dict[str, Any]:
