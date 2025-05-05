@@ -17,7 +17,7 @@ This project is a simplified client for a file management service. It allows use
 To install the client, clone the repository and use `setup.py` to install the dependencies:
 
 ```bash
-git clone https://github.com/ThubanTech/file-manager-client.git
+git clone https://github.com/ThubanTechnologies/file-manager-client.git
 cd file-manager-client
 pip install .
 ```
