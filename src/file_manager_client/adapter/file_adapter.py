@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import Dict, Any, Optional, List, Union
-from pathlib import Path
+from urllib.parse import quote
 from .exceptions import FileManagerAdapterException
 from ..utils.http_client import HttpClient
 from ..models.response import FileResponse
@@ -110,10 +110,10 @@ class FileAdapter:
             if is_iterable:
                 for item in value:
                     if item:
-                        query_parts.append(f"{key}={item}")
+                        query_parts.append(f"{key}={quote(str(item), safe='/')}")
             elif value:
-                query_parts.append(f"{key}={value}")
-
+                query_parts.append(f"{key}={quote(str(value), safe='/')}")
+                
         if not query_parts:
             return base_url
 
