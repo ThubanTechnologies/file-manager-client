@@ -4,7 +4,7 @@ from .utils.http_client import HttpClient
 from .models.requests import POSTFile, GETFile, PUTFile, DELETEFile, GETStructure
 from .models.responses import FileEntity
 from .utils.normalize_path import normalize_path
-
+from urllib.parse import quote
 
 class FileManagerClient:
     """Simplified client for the file manager."""
@@ -49,6 +49,7 @@ class FileManagerClient:
             file_path: File path
         """
         file_path = normalize_path(file_path)
+        file_path = quote(file_path, safe="/")
         request = GETFile(bucket_id=bucket_id, file_path=file_path)
         return self.adapter.get_file(request)
 
@@ -100,5 +101,6 @@ class FileManagerClient:
             file_path: File path
         """
         file_path = normalize_path(file_path)
+        file_path = quote(file_path, safe="/")
         request = DELETEFile(bucket_id=bucket_id, file_path=file_path)
         return self.adapter.delete_file(request)
