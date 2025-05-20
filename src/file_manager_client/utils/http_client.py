@@ -1,4 +1,5 @@
 from typing import Dict, Any, Optional
+from urllib.parse import unquote
 import requests
 from io import BytesIO
 from ..adapter.exceptions import FileManagerAdapterException
