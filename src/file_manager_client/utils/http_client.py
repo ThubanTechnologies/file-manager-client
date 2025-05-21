@@ -68,9 +68,13 @@ class HttpClient:
     def _get_filename_from_headers(self, response: requests.Response) -> Optional[str]:
         """Extract filename from Content-Disposition header."""
         cd = response.headers.get("Content-Disposition")
-        if cd and "filename=" in cd:
+        if not cd:
+            return None
+        if "filename*=" in cd:
+            encoding, filename_encoded = cd.split("filename*=")[-1].split("''", 1)
+            return unquote(filename_encoded)
+        elif "filename=" in cd:
             return cd.split("filename=")[-1].strip('"')
-        return None
 
     def _make_request(self, method: str, url: str, **kwargs) -> Dict[str, Any]:
         """Make HTTP request expecting JSON response."""
