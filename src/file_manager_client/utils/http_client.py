@@ -4,8 +4,6 @@ import requests
 from io import BytesIO
 from ..adapter.exceptions import FileManagerAdapterException
 from ..models.response import FileResponse
-import logging
-logger = logging.getLogger(__name__)
 
 
 class HttpClient:
