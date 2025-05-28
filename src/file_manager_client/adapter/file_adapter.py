@@ -110,9 +110,9 @@ class FileAdapter:
             if is_iterable:
                 for item in value:
                     if item:
-                        query_parts.append(f"{key}={quote(str(item), safe='/')}")
+                        query_parts.append(f"{key}={str(item)}")
             elif value:
-                query_parts.append(f"{key}={quote(str(value), safe='/')}")
+                query_parts.append(f"{key}={str(value)}")
                 
         if not query_parts:
             return base_url
